@@ -219,7 +219,7 @@ def _donut_slices(cx, cy, draw_buckets: list[tuple]) -> list[str]:
 def _center_text(cx, cy, protected_count, total, field) -> list[str]:
     """Render center percentage + 'protected' label."""
     if total == 0:
-        return []
+        return [_t(cx, cy + 8, "N/A", 20, STONE_GRAY, weight=700, anchor="middle")]
     pct = protected_count / total * 100
     pct_str = _fmt_pct(pct)
     color = MINT_GREEN if pct >= 80 else PURE_ORANGE if pct >= 50 else QUARTZ_PINK
@@ -294,17 +294,22 @@ def _render_chart_col(
     parts += _breakdown(col_x, bkdn_y, display_buckets, total, fmt)
 
 
-def _build_y(n_bkdn_rows: int) -> dict:
+def _build_y(n_bkdn_rows: int, has_excluded: bool = False) -> dict:
     """Pre-compute Y positions (relative to card top) given breakdown row count."""
     y = {}
     y["name_base"]        = ACCENT_H + PAD_TOP + 22   # 53  — array name baseline
-    y["divider"]          = y["name_base"] + 12        # 65  — header divider (~50% closer to name)
+    y["divider"]          = y["name_base"] + 12        # 65  — header divider
     cur                   = y["divider"] + 2 + 18      # 85  — chart section start
     y["chart_title_base"] = cur + 14                   # 99
     y["donut_top"]        = y["chart_title_base"] + 14 # 113
     y["donut_cy"]         = y["donut_top"] + OUTER_R   # 203
     y["bkdn_top"]         = y["donut_top"] + 2 * OUTER_R + 24  # 317
-    y["card_h"]           = y["bkdn_top"] + (n_bkdn_rows + 1) * ROW_H + BOT_PAD
+    bkdn_end              = y["bkdn_top"] + (n_bkdn_rows + 1) * ROW_H
+    if has_excluded:
+        y["footnote_top"] = bkdn_end + 8
+        y["card_h"]       = y["footnote_top"] + ROW_H + BOT_PAD
+    else:
+        y["card_h"]       = bkdn_end + BOT_PAD
     return y
 
 
@@ -312,18 +317,16 @@ def render_card(
     array_name: str,
     data: dict,
     mode: str,
-    excl_from_chart: bool,
     font_css: str,
 ) -> str:
     """Generate a complete SVG card for one array."""
 
-    # Build visible buckets — display order (RISK_ORDER) and draw order (largest first)
+    # Excluded volumes are always removed from chart/breakdown; shown only as footnote
     def _display(field: str) -> list[tuple]:
         return [
             (r, data[r][field])
             for r in RISK_ORDER
-            if data[r][field] > 0
-            and not (excl_from_chart and r == "EXCLUDED")
+            if data[r][field] > 0 and r != "EXCLUDED"
         ]
 
     def _draw(field: str) -> list[tuple]:
@@ -341,17 +344,17 @@ def render_card(
     protected_count = data["PROTECTED"]["count"] + data["PROTECTED (NOT BP)"]["count"]
     protected_cap   = data["PROTECTED"]["cap"]   + data["PROTECTED (NOT BP)"]["cap"]
 
+    excl_count = data["EXCLUDED"]["count"]
+    excl_cap   = data["EXCLUDED"]["cap"]
+
     n_bkdn = len(count_display)
-    y = _build_y(n_bkdn)
+    y = _build_y(n_bkdn, has_excluded=(excl_count > 0))
 
     card_w = DUAL_W if mode == "both" else SINGLE_W
     card_h = y["card_h"]
 
-    # Header stats (right-aligned beside array name); append excluded count if any
-    excl_n = data["EXCLUDED"]["count"]
+    # Header stats — non-excluded totals only; footnote handles exclusion callout
     stats = f"{count_total} volumes  |  {_fmt_cap(cap_total)} effective"
-    if excl_n > 0:
-        stats += f"  ·  {excl_n} excluded"
 
     # SVG dimensions — card fills the SVG with a small margin for shadow
     M = 8  # margin for shadow bleed
@@ -444,6 +447,12 @@ def render_card(
                 _fmt_cap, parts,
             )
 
+    # --- Exclusion footnote ---
+    if excl_count > 0:
+        fn_y = cy0 + y["footnote_top"] + ROW_H // 2 + 4
+        fn_text = f"ℹ {excl_count} volumes excluded ({_fmt_cap(excl_cap)})"
+        parts.append(_t(cx0 + PAD_X, fn_y, fn_text, 11, WALNUT_BROWN))
+
     parts.append("</svg>")
     return "\n".join(parts)
 
@@ -458,8 +467,6 @@ def main() -> None:
     ap.add_argument("--output-dir", required=True, help="Directory for output SVG files")
     ap.add_argument("--mode", choices=["count", "capacity", "both"], default="both")
     ap.add_argument("--arrays", help="Comma-separated list of array names to include")
-    ap.add_argument("--exclude-from-chart", action="store_true",
-                    help="Remove excluded volumes from charts entirely")
     ap.add_argument("--min-pct", type=float, default=0,
                     help="Merge slices below this %% into Other (default: 0)")
     ap.add_argument("--font-dir", help="Directory containing PureSans .ttf files")
@@ -490,7 +497,7 @@ def main() -> None:
 
     # Generate one SVG per array
     for array_name, data in arrays.items():
-        svg = render_card(array_name, data, args.mode, args.exclude_from_chart, font_css)
+        svg = render_card(array_name, data, args.mode, font_css)
         safe_name = array_name.replace("/", "_").replace(":", "_")
         out_path = output_dir / f"{safe_name}_{args.mode}.svg"
         out_path.write_text(svg)

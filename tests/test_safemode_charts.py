@@ -43,27 +43,27 @@ def test_critical_count(data):
 
 
 def test_svg_valid_xml_both(data):
-    svg = render_card("ashbpasan001", data["ashbpasan001"], "both", False, "")
+    svg = render_card("ashbpasan001", data["ashbpasan001"], "both", "")
     ET.fromstring(svg)  # raises if invalid
 
 
 def test_svg_valid_xml_count(data):
-    svg = render_card("ashbpasan001", data["ashbpasan001"], "count", False, "")
+    svg = render_card("ashbpasan001", data["ashbpasan001"], "count", "")
     ET.fromstring(svg)
 
 
 def test_svg_valid_xml_capacity(data):
-    svg = render_card("ashbpasan001", data["ashbpasan001"], "capacity", False, "")
+    svg = render_card("ashbpasan001", data["ashbpasan001"], "capacity", "")
     ET.fromstring(svg)
 
 
 def test_svg_contains_array_name(data):
-    svg = render_card("ashbpasan001", data["ashbpasan001"], "both", False, "")
+    svg = render_card("ashbpasan001", data["ashbpasan001"], "both", "")
     assert "ashbpasan001" in svg
 
 
 def test_svg_contains_brand_colors(data):
-    svg = render_card("ashbpasan001", data["ashbpasan001"], "both", False, "")
+    svg = render_card("ashbpasan001", data["ashbpasan001"], "both", "")
     assert "#8FA596" in svg  # MOSS_GREEN — protected (not BP) slices
     assert "#BD673D" in svg  # CINNAMON_BROWN — at risk slices
     assert "#DEA193" in svg  # QUARTZ_PINK — critical slices
