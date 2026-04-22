@@ -446,8 +446,8 @@ def write_xlsx(rows: list[dict], output_path: Path) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description="Pure Storage FlashArray SafeMode Parser")
     ap.add_argument("--input-dir", required=True, help="Root folder with one subfolder per array")
-    ap.add_argument("--output", required=True, help="Output .xlsx path")
-    ap.add_argument("--existing", help="Existing spreadsheet to persist Exclude/Reason from")
+    ap.add_argument("--output", required=True, help="Output .xlsx path (read back for Exclude/Reason if it already exists)")
+    ap.add_argument("--existing", help="Alternate .xlsx to read Exclude/Reason from (overrides --output)")
     args = ap.parse_args()
 
     input_dir = Path(args.input_dir)
@@ -457,7 +457,8 @@ def main() -> None:
         log.error("Input directory not found: %s", input_dir)
         sys.exit(1)
 
-    persist = load_existing(Path(args.existing)) if args.existing else {}
+    persist_path = Path(args.existing) if args.existing else output_path
+    persist = load_existing(persist_path)
 
     array_folders = sorted(d for d in input_dir.iterdir() if d.is_dir())
     if not array_folders:

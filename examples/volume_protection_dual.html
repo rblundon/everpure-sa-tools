@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volume Protection Status</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #FFF8EE;
+    color: #3C3C3B;
+    padding: 40px;
+  }
+
+  .header { margin-bottom: 32px; }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .header p {
+    font-size: 14px;
+    color: #6B7D6B;
+  }
+
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    font-size: 13px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .swatch-green { background: #6AAF5C; }
+  .swatch-yellow { background: #E8B830; }
+  .swatch-red { background: #CC4444; }
+
+  .array-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 32px;
+  }
+
+  .array-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #3C3C3B;
+    padding-bottom: 12px;
+  }
+
+  .array-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .array-header .meta {
+    font-size: 12px;
+    color: #6B7D6B;
+  }
+
+  .dual-charts {
+    display: flex;
+    gap: 64px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 280px;
+  }
+
+  .chart-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    color: #6B7D6B;
+  }
+
+  .pie-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 20px;
+  }
+
+  .pie-container svg {
+    transform: rotate(-90deg);
+  }
+
+  .pie-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .pie-center .pct {
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .pie-center .pct-label {
+    font-size: 10px;
+    color: #6B7D6B;
+  }
+
+  .breakdown {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #F0ECE4;
+    font-size: 12px;
+  }
+
+  .breakdown-row:last-child {
+    border-bottom: none;
+  }
+
+  .breakdown-row.total-row {
+    border-top: 2px solid #3C3C3B;
+    margin-top: 4px;
+    padding-top: 8px;
+    font-weight: 700;
+  }
+
+  .breakdown-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .breakdown-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .breakdown-value {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .dot-green { background: #6AAF5C; }
+  .dot-yellow { background: #E8B830; }
+  .dot-red { background: #CC4444; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Volume Protection Status</h1>
+  <p>Data collected March 31, 2026</p>
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-swatch swatch-green"></div>
+    <span>Ratcheted PGroup (Protected)</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch swatch-yellow"></div>
+    <span>Unlocked PGroup (At Risk)</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch swatch-red"></div>
+    <span>No Protection Group (Critical)</span>
+  </div>
+</div>
+
+<div id="arrays"></div>
+
+<script>
+const arrays = [
+  {
+    name: "ashbpasan001",
+    meta: "87 volumes  |  203.88 TB raw capacity  |  80.75 TB effective",
+    count: {
+      ratcheted: 8,
+      unlocked: 10,
+      unprotected: 69
+    },
+    // Effective capacity in TB
+    capacity: {
+      ratcheted: 0.002,      // ~2.05 GB
+      unlocked: 53.66,       // 10 ashbd-gc volumes
+      unprotected: 27.09     // Oracle, VDI, Portworx, other
+    }
+  }
+];
+
+const COLORS = ['#6AAF5C', '#E8B830', '#CC4444'];
+const LABELS = ['Ratcheted (Protected)', 'Unlocked PGroup (At Risk)', 'No PGroup (Critical)'];
+const DOT_CLASSES = ['dot-green', 'dot-yellow', 'dot-red'];
+
+function createPieSlice(cx, cy, r, startAngle, endAngle, color) {
+  if (endAngle - startAngle >= 2 * Math.PI - 0.001) {
+    return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" />`;
+  }
+  if (endAngle - startAngle < 0.001) return '';
+  const x1 = cx + r * Math.cos(startAngle);
+  const y1 = cy + r * Math.sin(startAngle);
+  const x2 = cx + r * Math.cos(endAngle);
+  const y2 = cy + r * Math.sin(endAngle);
+  const largeArc = endAngle - startAngle > Math.PI ? 1 : 0;
+  return `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z" fill="${color}" />`;
+}
+
+function formatCapacity(tb) {
+  if (tb >= 1) return tb.toFixed(2) + ' TB';
+  if (tb >= 0.001) return (tb * 1024).toFixed(1) + ' GB';
+  return (tb * 1024 * 1024).toFixed(1) + ' MB';
+}
+
+function renderPie(values, total, formatFn, centerLabel) {
+  const cx = 100, cy = 100, r = 90;
+  let slices = '';
+  let currentAngle = 0;
+
+  for (let i = 0; i < values.length; i++) {
+    if (values[i] === 0) continue;
+    const sliceAngle = (values[i] / total) * 2 * Math.PI;
+    slices += createPieSlice(cx, cy, r, currentAngle, currentAngle + sliceAngle, COLORS[i]);
+    currentAngle += sliceAngle;
+  }
+
+  const protectedPct = total > 0 ? ((values[0] / total) * 100) : 0;
+  const pctDisplay = protectedPct < 0.1 && protectedPct > 0 ? '<0.1' : Math.round(protectedPct);
+  const pctColor = protectedPct >= 80 ? '#6AAF5C' : protectedPct >= 50 ? '#E8B830' : '#CC4444';
+
+  let breakdownRows = '';
+  for (let i = 0; i < values.length; i++) {
+    const pct = total > 0 ? ((values[i] / total) * 100) : 0;
+    const pctStr = pct < 0.1 && pct > 0 ? '<0.1%' : Math.round(pct) + '%';
+    breakdownRows += `
+      <div class="breakdown-row">
+        <div class="breakdown-label">
+          <div class="breakdown-dot ${DOT_CLASSES[i]}"></div>
+          <span>${LABELS[i]}</span>
+        </div>
+        <div class="breakdown-value">${formatFn(values[i])} (${pctStr})</div>
+      </div>`;
+  }
+
+  breakdownRows += `
+    <div class="breakdown-row total-row">
+      <div class="breakdown-label"><span>Total</span></div>
+      <div class="breakdown-value">${formatFn(total)}</div>
+    </div>`;
+
+  return `
+    <div class="chart-column">
+      <div class="chart-title">${centerLabel}</div>
+      <div class="pie-container">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          ${slices}
+          <circle cx="100" cy="100" r="50" fill="#fff" />
+        </svg>
+        <div class="pie-center">
+          <div class="pct" style="color: ${pctColor}">${pctDisplay}%</div>
+          <div class="pct-label">protected</div>
+        </div>
+      </div>
+      <div class="breakdown">
+        ${breakdownRows}
+      </div>
+    </div>`;
+}
+
+function renderArray(array) {
+  const countVals = [array.count.ratcheted, array.count.unlocked, array.count.unprotected];
+  const countTotal = countVals.reduce((a, b) => a + b, 0);
+
+  const capVals = [array.capacity.ratcheted, array.capacity.unlocked, array.capacity.unprotected];
+  const capTotal = capVals.reduce((a, b) => a + b, 0);
+
+  return `
+    <div class="array-section">
+      <div class="array-header">
+        <h2>${array.name}</h2>
+        <div class="meta">${array.meta}</div>
+      </div>
+      <div class="dual-charts">
+        ${renderPie(countVals, countTotal, v => v + ' vols', 'By Volume Count')}
+        ${renderPie(capVals, capTotal, formatCapacity, 'By Effective Capacity')}
+      </div>
+    </div>`;
+}
+
+document.getElementById('arrays').innerHTML = arrays.map(renderArray).join('');
+</script>
+
+</body>
+</html>
