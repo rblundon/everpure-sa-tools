@@ -1,0 +1,6 @@
+
+------------------------------------------------------------------------
+Apr 21 15:05:36 purearray list --space --physical
+------------------------------------------------------------------------
+Name          Capacity  Parity  Provisioned Size  Virtual  Thin Provisioning  Data Reduction  Total Reduction  Unique  Snapshots  Shared  System  Replication  Total   Method
+ashbpasan001  203.88T   100%    -                 68.19T   100%               7.2 to 1        33.3 to 1        7.58T   774.52G    2.29T   0.00    0.00         10.62T  physical

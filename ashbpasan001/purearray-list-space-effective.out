@@ -1,0 +1,6 @@
+
+------------------------------------------------------------------------
+Apr 21 15:05:36 purearray list --space --effective
+------------------------------------------------------------------------
+Name          Capacity  Provisioned Size  Virtual  Thin Provisioning  Unique  Snapshots  Shared   Replication  Total   Method
+ashbpasan001  611.63T   -                 68.19T   100%               67.02T  16.21T     629.23G  0.00         83.85T  effective

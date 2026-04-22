@@ -1,0 +1,9 @@
+
+------------------------------------------------------------------------
+Apr 21 15:06:35 purepgroup list --space --physical --total
+------------------------------------------------------------------------
+Name                       Snapshots  Method
+ASH-Pre-Prod-VM-PG         774.50G    physical
+pgroup-auto                16.15M     physical
+pmg-test-ASH::pgroup-auto  0.00       physical
+(total)                    774.52G    physical

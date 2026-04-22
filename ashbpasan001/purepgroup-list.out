@@ -1,0 +1,15 @@
+
+------------------------------------------------------------------------
+Apr 21 15:06:33 purepgroup list
+------------------------------------------------------------------------
+Name                       Source        Targets  Host Groups       Hosts  Volumes
+ASH-Pre-Prod-VM-PG         ashbpasan001  -        ASHB-ESX-GC-D-HG  -      -
+pgroup-auto                ashbpasan001  -        -                 -      ashbdr-db-241-A01-n
+                                                                           ashbdr-db-242-A01-n
+                                                                           ashbdr-db-243-A01-n
+                                                                           ashbdr-db-244-A01-n
+                                                                           ashbdr-gc-241-A01-n
+                                                                           ashbdr-gc-242-A01-n
+                                                                           ashbdr-gc-243-A01-n
+                                                                           ashbdr-gc-244-A01-n
+pmg-test-ASH::pgroup-auto  pmg-test-ASH  -        -                 -      -

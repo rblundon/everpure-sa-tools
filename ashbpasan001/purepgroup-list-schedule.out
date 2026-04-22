@@ -1,0 +1,11 @@
+
+------------------------------------------------------------------------
+Apr 21 15:06:34 purepgroup list --schedule
+------------------------------------------------------------------------
+Name                       Schedule   Enabled  Frequency  At  Blackout
+ASH-Pre-Prod-VM-PG         snap       True     6h         -   -
+                           replicate  False    4h         -   -
+pgroup-auto                snap       True     6h         -   -
+                           replicate  False    6h         -   -
+pmg-test-ASH::pgroup-auto  snap       True     6h         -   -
+                           replicate  False    6h         -   -

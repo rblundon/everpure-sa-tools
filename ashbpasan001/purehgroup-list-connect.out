@@ -1,0 +1,36 @@
+
+------------------------------------------------------------------------
+Apr 21 15:05:51 purehgroup list --connect
+------------------------------------------------------------------------
+Name               Lun  NSID  Vol
+ASHB-Array02-VDI   246  -     ashb-vdi-246-A01-n
+ASHB-Array02-VDI   247  -     ashb-vdi-247-A01-n
+ASHB-Array02-VDI   248  -     ashb-vdi-248-A01-n
+ASHB-Array02-VDI   249  -     ashb-vdi-249-A01-n
+ASHB-Array02-VDI   250  -     ashb-vdi-250-A01-n
+ASHB-Array02-VDI   251  -     ashb-vdi-251-A01-n
+ASHB-Array02-VDI   252  -     ashb-vdi-252-A01-n
+ASHB-Array02-VDI   253  -     ashb-vdi-253-A01-n
+ASHB-Array02-VDI   254  -     ashb-vdi-254-A01-n
+ASHB-ESX-DB-DR-HG  241  -     ashbdr-db-241-A01-n
+ASHB-ESX-DB-DR-HG  242  -     ashbdr-db-242-A01-n
+ASHB-ESX-DB-DR-HG  243  -     ashbdr-db-243-A01-n
+ASHB-ESX-DB-DR-HG  244  -     ashbdr-db-244-A01-n
+ASHB-ESX-DB-DR-HG  254  -     ashbr-dr-pod001::ashbr-dr-ashbpvvcsa01-PE
+ASHB-ESX-DB-DR-HG  253  -     pure-protocol-endpoint
+ASHB-ESX-GC-D-HG   245  -     ashbd-gc-245-A01-n
+ASHB-ESX-GC-D-HG   246  -     ashbd-gc-246-A01-n
+ASHB-ESX-GC-D-HG   247  -     ashbd-gc-247-A01-n
+ASHB-ESX-GC-D-HG   248  -     ashbd-gc-248-A01-n
+ASHB-ESX-GC-D-HG   249  -     ashbd-gc-249-A01-n
+ASHB-ESX-GC-D-HG   250  -     ashbd-gc-250-A01-n
+ASHB-ESX-GC-D-HG   251  -     ashbd-gc-251-A01-n
+ASHB-ESX-GC-D-HG   252  -     ashbd-gc-252-A01-n
+ASHB-ESX-GC-D-HG   253  -     ashbd-gc-253-A01-n
+ASHB-ESX-GC-D-HG   254  -     ashbd-gc-254-A01-n
+ASHB-ESX-GC-DR-HG  241  -     ashbdr-gc-241-A01-n
+ASHB-ESX-GC-DR-HG  242  -     ashbdr-gc-242-A01-n
+ASHB-ESX-GC-DR-HG  243  -     ashbdr-gc-243-A01-n
+ASHB-ESX-GC-DR-HG  244  -     ashbdr-gc-244-A01-n
+ASHB-ESX-GC-DR-HG  253  -     ashbdr-gc-253-A01-n
+ASHB-ESX-GC-DR-HG  254  -     ashbr-dr-pod001::ashbr-dr-ashbpvvcsa01-PE

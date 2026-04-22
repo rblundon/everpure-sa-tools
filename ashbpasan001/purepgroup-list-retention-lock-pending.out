@@ -1,0 +1,8 @@
+
+------------------------------------------------------------------------
+Apr 21 15:06:36 purepgroup list --retention-lock --pending
+------------------------------------------------------------------------
+Name                       Retention Lock  Manual Eradication
+ASH-Pre-Prod-VM-PG         unlocked        disabled
+pgroup-auto                ratcheted       disabled
+pmg-test-ASH::pgroup-auto  ratcheted       disabled

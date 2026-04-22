@@ -1,0 +1,11 @@
+
+------------------------------------------------------------------------
+Apr 21 15:06:35 purepgroup list --retention
+------------------------------------------------------------------------
+Name                       Array   All For  Per Day  Days
+ASH-Pre-Prod-VM-PG         source  1d       1        7
+                           target  1d       4        7
+pgroup-auto                source  3d       1        5
+                           target  3d       1        5
+pmg-test-ASH::pgroup-auto  source  3d       1        5
+                           target  3d       1        5
